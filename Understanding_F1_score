@@ -1,0 +1,1612 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "How is F1 score calculated?",
+      "provenance": [],
+      "collapsed_sections": [],
+      "toc_visible": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": [
+        "F1 score formulation"
+      ],
+      "metadata": {
+        "id": "g9HtUtphRsGF"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![image.png](data:image/png;base64,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)"
+      ],
+      "metadata": {
+        "id": "S3H8JRw1SWPi"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "- Precision -> how many are real labels correct to predictive positive labels?\n",
+        "- Recall -> how many are predictive positive labels correct to real labels"
+      ],
+      "metadata": {
+        "id": "FA3DWnFaXrhS"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "- TP -> True positive\n",
+        "- FP -> False positive\n",
+        "- FN -> False negative"
+      ],
+      "metadata": {
+        "id": "ZC7wGVolTlWD"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import numpy as np\n",
+        "from sklearn.metrics import f1_score,precision_score,recall_score,confusion_matrix,classification_report"
+      ],
+      "metadata": {
+        "id": "LQlAU2kmTRvD"
+      },
+      "execution_count": 21,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#Binary"
+      ],
+      "metadata": {
+        "id": "-l7jc2VZQq6O"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "labels=[0,1]"
+      ],
+      "metadata": {
+        "id": "kTPIRZf_txEg"
+      },
+      "execution_count": 31,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Only use to get the f1 score for positive label"
+      ],
+      "metadata": {
+        "id": "bqt212M_SYjq"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 32,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "y6URCIm8PHL2",
+        "outputId": "a27c693f-f991-4dff-ee82-63cad1f431ed"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "array([0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1,\n",
+              "       1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1,\n",
+              "       1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,\n",
+              "       0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0,\n",
+              "       0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1])"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 32
+        }
+      ],
+      "source": [
+        "y_true=np.random.randint(low=0,high=2,size=(100))\n",
+        "y_true"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "y_pred=np.random.randint(low=0,high=2,size=(100))\n",
+        "y_pred"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "hyaAWt7zTg69",
+        "outputId": "085f34ca-8c9c-423d-b100-a9917511d531"
+      },
+      "execution_count": 33,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "array([1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1,\n",
+              "       1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0,\n",
+              "       1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0,\n",
+              "       0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1,\n",
+              "       1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1])"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 33
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cal_TP_FP_FN(y_true,y_pred,pos_label=0):\n",
+        "  # shape of y_true: (num_samples,)\n",
+        "  # shape of y_pred: (num_samples,)\n",
+        "\n",
+        "  _pos_label=np.where(y_true==pos_label)[0]\n",
+        "  _neg_label=np.where(y_true!=pos_label)[0]\n",
+        "  \n",
+        "  pred_pos_label=np.take(y_pred,_pos_label)\n",
+        "  pred_neg_label=np.take(y_pred,_neg_label)\n",
+        "\n",
+        "  TP=np.count_nonzero(pred_pos_label==pos_label)\n",
+        "  FN=len(pred_pos_label)-TP\n",
+        "\n",
+        "  TN=np.count_nonzero(pred_neg_label!=pos_label)\n",
+        "  FP=len(pred_neg_label)-TN\n",
+        "\n",
+        "  return TP,FP,FN"
+      ],
+      "metadata": {
+        "id": "izazqeqWlWwQ"
+      },
+      "execution_count": 34,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cal_precision(TP,FP):\n",
+        "  return TP/(TP+FP)"
+      ],
+      "metadata": {
+        "id": "Svqc4w7-qh6e"
+      },
+      "execution_count": 35,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cal_recall(TP,FN):\n",
+        "  return TP/(TP+FN)"
+      ],
+      "metadata": {
+        "id": "kGkbKhxEqqeq"
+      },
+      "execution_count": 36,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cal_f1_score(precision,recall):\n",
+        "  return 2*(precision*recall)/(precision+recall)"
+      ],
+      "metadata": {
+        "id": "wdUTXvL8quWR"
+      },
+      "execution_count": 37,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "TP,FP,FN=cal_TP_FP_FN(y_true,y_pred,pos_label=0)\n",
+        "label_0_precision=cal_precision(TP,FP)\n",
+        "label_0_recall=cal_recall(TP,FN)\n",
+        "label_0_f1_score=cal_f1_score(label_0_precision,label_0_recall)\n",
+        "label_0_f1_score"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "qn1sOjG7n4f-",
+        "outputId": "e89958b7-bbda-4f84-a888-cae6f5780e75"
+      },
+      "execution_count": 38,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.46808510638297873"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 38
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "TP,FP,FN=cal_TP_FP_FN(y_true,y_pred,pos_label=1)\n",
+        "label_1_precision=cal_precision(TP,FP)\n",
+        "label_1_recall=cal_recall(TP,FN)\n",
+        "label_1_f1_score=cal_f1_score(label_1_precision,label_1_recall)\n",
+        "label_1_f1_score"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "UkK6fCN2oGnk",
+        "outputId": "cfb205ca-d078-470a-f89c-15cb4dae3a45"
+      },
+      "execution_count": 39,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5283018867924528"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 39
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# only use pos_label when average is binary\n",
+        "f1_score(y_true,y_pred,average='binary',pos_label=0)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "yKTXZ6Ktez6o",
+        "outputId": "b0c3de9c-352f-4d72-b09e-407d796b05da"
+      },
+      "execution_count": 40,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.46808510638297873"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 40
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "f1_score(y_true,y_pred,average='binary',pos_label=1)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "nKe6pyqIogYB",
+        "outputId": "f414fb04-944d-48a1-a6fb-4133a623f127"
+      },
+      "execution_count": 41,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5283018867924528"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 41
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Micro"
+      ],
+      "metadata": {
+        "id": "YO3OVQkdRRWD"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "np.unique(y_true)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "n97Fey_tLNnB",
+        "outputId": "784c0089-6916-4e06-ed5e-c4af0c17d1d7"
+      },
+      "execution_count": 45,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "array([0, 1])"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 45
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Calculate metrics globally by counting the total true positives, false negatives and false positives.\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "X9WIWBX-pNpT"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cal_micro_f1_score(y_true,y_pred,labels=None):\n",
+        "\n",
+        "  if labels==None:\n",
+        "    labels=np.unique(y_true)\n",
+        "\n",
+        "  TP_total=0\n",
+        "  FP_total=0\n",
+        "  FN_total=0\n",
+        "  for label in labels:\n",
+        "    TP,FP,FN=cal_TP_FP_FN(y_true,y_pred,pos_label=label)\n",
+        "    TP_total+=TP\n",
+        "    FP_total+=FP\n",
+        "    FN_total+=FN\n",
+        "  micro_precision=cal_precision(TP_total,FP_total)\n",
+        "  micro_recall=cal_precision(TP_total,FN_total)\n",
+        "  micro_f1_score=cal_f1_score(micro_precision,micro_recall)\n",
+        "  return micro_f1_score"
+      ],
+      "metadata": {
+        "id": "yiM94MygRUOm"
+      },
+      "execution_count": 46,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cal_micro_f1_score(y_true,y_pred)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "enJbvcviqQ0e",
+        "outputId": "359a3ca9-e0a1-40d0-b7b5-29b8ec28d896"
+      },
+      "execution_count": 47,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 47
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "f1_score(y_true,y_pred,average='micro')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "aTlOvhU2s9qb",
+        "outputId": "9ace1872-ad51-4a57-a9b2-ed53340375c1"
+      },
+      "execution_count": 48,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 48
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#Macro"
+      ],
+      "metadata": {
+        "id": "Rot6nkGBRoek"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "Calculate metrics for each label, and find their unweighted mean. This does not take label imbalance into account.\n",
+        "\n",
+        "Note: did not use when label imbalanced"
+      ],
+      "metadata": {
+        "id": "lj70yiwZtXn3"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cal_macro_f1_score(y_true,y_pred,labels=None):\n",
+        "  if labels==None:\n",
+        "    labels=np.unique(y_true)\n",
+        "    \n",
+        "  macro_f1_score=0\n",
+        "  for label in labels:\n",
+        "    TP,FP,FN=cal_TP_FP_FN(y_true,y_pred,pos_label=label)\n",
+        "    precision=cal_precision(TP,FP)\n",
+        "    recall=cal_recall(TP,FN)\n",
+        "    f1=cal_f1_score(precision,recall)\n",
+        "    macro_f1_score+=f1\n",
+        "\n",
+        "  macro_f1_score/=len(labels)\n",
+        "  return macro_f1_score"
+      ],
+      "metadata": {
+        "id": "wdLxnORvRpOF"
+      },
+      "execution_count": 49,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cal_macro_f1_score(y_true,y_pred)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "1ZDflbFXLVoD",
+        "outputId": "9d2e8ff9-b30c-4ce8-e12f-de5bde7442db"
+      },
+      "execution_count": 50,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.4981934965877158"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 50
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "f1_score(y_true,y_pred,average='macro')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "VDVuQN-muBF_",
+        "outputId": "d43c95b0-05fd-46ad-eeb7-0249b3979ca5"
+      },
+      "execution_count": 51,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.4981934965877158"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 51
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#Weighted"
+      ],
+      "metadata": {
+        "id": "Qi1rlsCdRp2W"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Calculating like macro F1 score but f1 score of each label will multiply with num of samples having its label"
+      ],
+      "metadata": {
+        "id": "v0OCfvwLKEky"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cal_weighted_f1_score(y_true,y_pred,labels=None):\n",
+        "  if labels==None:\n",
+        "    labels=np.unique(y_true)\n",
+        "    \n",
+        "  weighted_f1_score=0\n",
+        "  for label in labels:\n",
+        "    TP,FP,FN=cal_TP_FP_FN(y_true,y_pred,pos_label=label)\n",
+        "    precision=cal_precision(TP,FP)\n",
+        "    recall=cal_recall(TP,FN)\n",
+        "    f1=cal_f1_score(precision,recall)\n",
+        "    weighted_f1_score+=f1*np.count_nonzero(y_true==label)\n",
+        "\n",
+        "  return weighted_f1_score/len(y_true)"
+      ],
+      "metadata": {
+        "id": "sq34KBxYvOQB"
+      },
+      "execution_count": 52,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cal_weighted_f1_score(y_true,y_pred)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "OzHrEUbJLi_P",
+        "outputId": "9f32d55b-e453-45b8-e8a4-d4fb3351e7ca"
+      },
+      "execution_count": 53,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.4987956643918105"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 53
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "f1_score(y_true,y_pred,average='weighted')"
+      ],
+      "metadata": {
+        "id": "evLZB1QRRrcJ",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "b2c0ee51-6c21-43ad-ed6f-5d4dfeff89ba"
+      },
+      "execution_count": 54,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.4987956643918105"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 54
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#Multi class"
+      ],
+      "metadata": {
+        "id": "34WVMzARKWZe"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Note: can not use average binary for multi class task"
+      ],
+      "metadata": {
+        "id": "7ArYQ7AbL7Eq"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "y_true=np.random.randint(low=0,high=4,size=(100))\n",
+        "y_true"
+      ],
+      "metadata": {
+        "id": "ZS17Nj714X3v",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "a5c938ff-e2af-415a-a5ec-c771e37d42c7"
+      },
+      "execution_count": 55,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "array([3, 2, 2, 3, 0, 3, 2, 0, 1, 3, 1, 2, 1, 2, 0, 2, 0, 1, 2, 0, 2, 0,\n",
+              "       3, 3, 0, 0, 2, 2, 3, 3, 1, 3, 2, 0, 3, 2, 1, 0, 3, 3, 2, 3, 3, 3,\n",
+              "       2, 2, 2, 0, 1, 0, 2, 2, 0, 3, 0, 3, 1, 1, 0, 1, 3, 0, 3, 3, 3, 1,\n",
+              "       0, 3, 0, 1, 2, 1, 1, 1, 3, 3, 0, 3, 2, 0, 0, 3, 3, 0, 3, 3, 1, 3,\n",
+              "       3, 3, 0, 1, 0, 2, 2, 0, 1, 3, 2, 0])"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 55
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "labels=[0,1,2,3]"
+      ],
+      "metadata": {
+        "id": "B3CNUwunKoM9"
+      },
+      "execution_count": 29,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "y_pred=np.random.randint(low=0,high=4,size=(100))\n",
+        "y_pred"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "JU8b6hvVKnTE",
+        "outputId": "b1c266a8-8383-41f7-db25-ea0e9097da22"
+      },
+      "execution_count": 56,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "array([3, 0, 1, 1, 1, 1, 2, 3, 1, 3, 3, 3, 3, 3, 1, 0, 0, 1, 3, 1, 2, 2,\n",
+              "       3, 0, 0, 0, 2, 0, 3, 3, 0, 2, 1, 2, 2, 1, 0, 0, 0, 1, 2, 0, 2, 2,\n",
+              "       1, 3, 3, 0, 0, 3, 0, 2, 0, 0, 3, 0, 0, 2, 1, 2, 1, 3, 1, 2, 3, 2,\n",
+              "       2, 3, 2, 3, 3, 0, 2, 2, 2, 2, 3, 0, 1, 2, 2, 1, 3, 3, 2, 2, 0, 1,\n",
+              "       3, 3, 0, 3, 3, 2, 2, 2, 3, 2, 2, 3])"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 56
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Micro"
+      ],
+      "metadata": {
+        "id": "wrSqJpt7MKtd"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cal_micro_f1_score(y_true,y_pred)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "EzAaxAbhL1mz",
+        "outputId": "802ce87f-0c31-480a-e517-cd2b5188b8d9"
+      },
+      "execution_count": 59,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.27"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 59
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "f1_score(y_true,y_pred,average='micro')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-np-oRbtMHPI",
+        "outputId": "c14ab1dd-56e1-4c33-dad1-acad72406179"
+      },
+      "execution_count": 60,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.27"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 60
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Macro"
+      ],
+      "metadata": {
+        "id": "afE1UJYBMPj4"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cal_macro_f1_score(y_true,y_pred)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "NfT6ILv4MEoc",
+        "outputId": "be8c9d4e-7fee-4e19-d0b5-981c439f3d30"
+      },
+      "execution_count": 61,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.25532320860987934"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 61
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "f1_score(y_true,y_pred,average='macro')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "C6CLOGWgMTPl",
+        "outputId": "cc37c736-0476-4f40-e13e-c2412a6d79ef"
+      },
+      "execution_count": 62,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.25532320860987934"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 62
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Weighted"
+      ],
+      "metadata": {
+        "id": "_stqVy-nMVd6"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cal_weighted_f1_score(y_true,y_pred)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "kjwDdYlqMUE8",
+        "outputId": "fe08f0e2-5a69-42a6-8cf7-1a26a5172cc8"
+      },
+      "execution_count": 63,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.2701712894530911"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 63
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "f1_score(y_true,y_pred,average='weighted')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "lmNCk9XVMZcR",
+        "outputId": "e9c773f8-f930-4d09-92d9-304b68885ad1"
+      },
+      "execution_count": 64,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.2701712894530911"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 64
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#Multi label"
+      ],
+      "metadata": {
+        "id": "7clkLfGdMebm"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Note: convert label to one hot vector"
+      ],
+      "metadata": {
+        "id": "IKyl3r48UFix"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "labels=[0,1,2,3]"
+      ],
+      "metadata": {
+        "id": "R3NcG3iJRYBT"
+      },
+      "execution_count": 89,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "y_true=np.random.randint(low=0,high=2,size=(10,4))\n",
+        "y_true"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "9hFOX-WaMajA",
+        "outputId": "a1f45711-ecca-4360-c6ed-0e758e928e9a"
+      },
+      "execution_count": 69,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "array([[1, 0, 0, 0],\n",
+              "       [1, 1, 1, 0],\n",
+              "       [0, 1, 1, 0],\n",
+              "       [1, 0, 1, 0],\n",
+              "       [0, 1, 0, 1],\n",
+              "       [1, 0, 1, 1],\n",
+              "       [1, 1, 1, 0],\n",
+              "       [1, 1, 1, 1],\n",
+              "       [0, 0, 1, 0],\n",
+              "       [1, 0, 0, 1]])"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 69
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "y_pred=np.random.randint(low=0,high=2,size=(10,4))\n",
+        "y_pred"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "cQlJciABNMNT",
+        "outputId": "b23c046c-3c81-4aa9-f877-ab8f0a5a5bdf"
+      },
+      "execution_count": 70,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "array([[0, 0, 1, 1],\n",
+              "       [1, 0, 0, 0],\n",
+              "       [1, 0, 0, 1],\n",
+              "       [1, 1, 1, 0],\n",
+              "       [0, 1, 0, 1],\n",
+              "       [1, 0, 0, 1],\n",
+              "       [1, 1, 0, 1],\n",
+              "       [1, 1, 0, 1],\n",
+              "       [1, 1, 1, 1],\n",
+              "       [0, 1, 1, 1]])"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 70
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for label in labels:\n",
+        "  _y_true=y_true[:,label]\n",
+        "  _y_pred=y_pred[:,label]\n",
+        "  TP,FP,FN=cal_TP_FP_FN(_y_true,_y_pred,pos_label=0)\n",
+        "  print(TP,FP,FN)\n",
+        "  TP,FP,FN=cal_TP_FP_FN(_y_true,_y_pred,pos_label=1)\n",
+        "  print(TP,FP,FN)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "hsqWcsW_NRfx",
+        "outputId": "aba70d02-94f0-4c66-a9ba-d667e55076ee"
+      },
+      "execution_count": 98,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "1 2 2\n",
+            "5 2 2\n",
+            "2 2 3\n",
+            "3 3 2\n",
+            "1 5 2\n",
+            "2 2 5\n",
+            "2 0 4\n",
+            "4 4 0\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.metrics import multilabel_confusion_matrix\n",
+        "multilabel_confusion_matrix(y_true, y_pred)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "WLGJI01aNgIy",
+        "outputId": "43cdaafd-34f9-48aa-f760-12856fc73afc"
+      },
+      "execution_count": 72,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "array([[[1, 2],\n",
+              "        [2, 5]],\n",
+              "\n",
+              "       [[2, 3],\n",
+              "        [2, 3]],\n",
+              "\n",
+              "       [[1, 2],\n",
+              "        [5, 2]],\n",
+              "\n",
+              "       [[2, 4],\n",
+              "        [0, 4]]])"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 72
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "(1+5)/(1+5+2)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "MNcVfGcpSU5N",
+        "outputId": "6b336067-69db-406e-e05d-de0a11875a87"
+      },
+      "execution_count": 100,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.75"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 100
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(classification_report(y_true,y_pred,digits=5))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "KlsoDfagNsA9",
+        "outputId": "2559c35f-23fa-49f3-a75f-4ae9a9c9546e"
+      },
+      "execution_count": 73,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "              precision    recall  f1-score   support\n",
+            "\n",
+            "           0    0.71429   0.71429   0.71429         7\n",
+            "           1    0.50000   0.60000   0.54545         5\n",
+            "           2    0.50000   0.28571   0.36364         7\n",
+            "           3    0.50000   1.00000   0.66667         4\n",
+            "\n",
+            "   micro avg    0.56000   0.60870   0.58333        23\n",
+            "   macro avg    0.55357   0.65000   0.57251        23\n",
+            "weighted avg    0.56522   0.60870   0.56258        23\n",
+            " samples avg    0.59167   0.59167   0.54238        23\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Note: Only take 1 as pos_label"
+      ],
+      "metadata": {
+        "id": "xRbxhExWUKM_"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for label in labels:\n",
+        "  _y_true=y_true[:,label]\n",
+        "  _y_pred=y_pred[:,label]\n",
+        "  print(label)\n",
+        "  TP,FP,FN=cal_TP_FP_FN(_y_true,_y_pred,pos_label=1)\n",
+        "  _precision=cal_precision(TP,FP)\n",
+        "  _recall=cal_recall(TP,FN)\n",
+        "  _f1_score=cal_f1_score(_precision,_recall)\n",
+        "  print(_precision,_recall,_f1_score,'\\n')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "o4ubOdMcN4wt",
+        "outputId": "48a7b769-d9db-4765-ac01-1120db3482c5"
+      },
+      "execution_count": 106,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "0\n",
+            "0.7142857142857143 0.7142857142857143 0.7142857142857143 \n",
+            "\n",
+            "1\n",
+            "0.5 0.6 0.5454545454545454 \n",
+            "\n",
+            "2\n",
+            "0.5 0.2857142857142857 0.36363636363636365 \n",
+            "\n",
+            "3\n",
+            "0.5 1.0 0.6666666666666666 \n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for label in labels:\n",
+        "  _y_true=y_true[:,label]\n",
+        "  _y_pred=y_pred[:,label]\n",
+        "  \n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "XIiTM9r7OLrN",
+        "outputId": "9bdc2b30-6e2e-448c-9ae8-eddc27c844cf"
+      },
+      "execution_count": 108,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "0\n",
+            "0.7142857142857143 \n",
+            "\n",
+            "1\n",
+            "0.5454545454545454 \n",
+            "\n",
+            "2\n",
+            "0.36363636363636365 \n",
+            "\n",
+            "3\n",
+            "0.6666666666666666 \n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Micro"
+      ],
+      "metadata": {
+        "id": "F3wen8UbV2PZ"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cal_micro_f1_score_for_multi_label(y_true,y_pred,labels=None):\n",
+        "\n",
+        "  if labels==None:\n",
+        "    labels=np.unique(y_true)\n",
+        "\n",
+        "  TP_total=0\n",
+        "  FP_total=0\n",
+        "  FN_total=0\n",
+        "  for label in labels:\n",
+        "    _y_true=y_true[:,label]\n",
+        "    _y_pred=y_pred[:,label]\n",
+        "    TP,FP,FN=cal_TP_FP_FN(_y_true,_y_pred,pos_label=1)\n",
+        "    TP_total+=TP\n",
+        "    FP_total+=FP\n",
+        "    FN_total+=FN\n",
+        "  micro_precision=cal_precision(TP_total,FP_total)\n",
+        "  micro_recall=cal_precision(TP_total,FN_total)\n",
+        "  micro_f1_score=cal_f1_score(micro_precision,micro_recall)\n",
+        "  return micro_f1_score"
+      ],
+      "metadata": {
+        "id": "q-4RT8JKQzQs"
+      },
+      "execution_count": 112,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cal_micro_f1_score_for_multi_label(y_true,y_pred,labels=[0,1,2,3])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "NW8t26t6RDn2",
+        "outputId": "eedbf9a4-9466-46d7-b720-ec3a2f1dd0cf"
+      },
+      "execution_count": 113,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5833333333333334"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 113
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "f1_score(y_true,y_pred,average='micro')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "XSL4ro_DVxyX",
+        "outputId": "3e20c5fa-8d86-4c45-a6a1-20e2248669f4"
+      },
+      "execution_count": 114,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5833333333333334"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 114
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Macro"
+      ],
+      "metadata": {
+        "id": "xwFQaVMbV46l"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cal_macro_f1_score_for_multi_label(y_true,y_pred,labels=None):\n",
+        "  if labels==None:\n",
+        "    labels=np.unique(y_true)\n",
+        "    \n",
+        "  macro_f1_score=0\n",
+        "  for label in labels:\n",
+        "    _y_true=y_true[:,label]\n",
+        "    _y_pred=y_pred[:,label]\n",
+        "    TP,FP,FN=cal_TP_FP_FN(_y_true,_y_pred,pos_label=1)\n",
+        "    precision=cal_precision(TP,FP)\n",
+        "    recall=cal_recall(TP,FN)\n",
+        "    f1=cal_f1_score(precision,recall)\n",
+        "    macro_f1_score+=f1\n",
+        "\n",
+        "  macro_f1_score/=len(labels)\n",
+        "  return macro_f1_score"
+      ],
+      "metadata": {
+        "id": "Zq5fhxgVRfao"
+      },
+      "execution_count": 146,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cal_macro_f1_score_for_multi_label(y_true,y_pred,labels=[0,1,2,3])\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "M1dBzO-6RwWa",
+        "outputId": "5da0ac4d-26f1-46cd-c63d-17ebc9df3088"
+      },
+      "execution_count": 147,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5725108225108225"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 147
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "f1_score(y_true,y_pred,average='macro')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "SVZMGjOaYQD2",
+        "outputId": "ae14e07e-47e1-4232-b7e5-e3f9d224793e"
+      },
+      "execution_count": 148,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5725108225108225"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 148
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Weighted"
+      ],
+      "metadata": {
+        "id": "MkRzph02YRMP"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cal_weighted_f1_score_for_multi_label(y_true,y_pred,labels=None):\n",
+        "  if labels==None:\n",
+        "    labels=np.unique(y_true)\n",
+        "    \n",
+        "  sample_totals=0\n",
+        "  weighted_f1_score=0\n",
+        "  for label in labels:\n",
+        "    _y_true=y_true[:,label]\n",
+        "    _y_pred=y_pred[:,label]\n",
+        "    TP,FP,FN=cal_TP_FP_FN(_y_true,_y_pred,pos_label=1)\n",
+        "    precision=cal_precision(TP,FP)\n",
+        "    recall=cal_recall(TP,FN)\n",
+        "    f1=cal_f1_score(precision,recall)\n",
+        "    num_samples=np.count_nonzero(_y_true==1)\n",
+        "    sample_totals+=num_samples\n",
+        "    weighted_f1_score+=f1*num_samples\n",
+        "\n",
+        "  return weighted_f1_score/sample_totals"
+      ],
+      "metadata": {
+        "id": "CioM4QavWFho"
+      },
+      "execution_count": 144,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cal_weighted_f1_score_for_multi_label(y_true,y_pred,labels=[0,1,2,3])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "8dYYFpj_WYBG",
+        "outputId": "d974b9fb-76e1-47ee-8a2e-2d90a0944a7d"
+      },
+      "execution_count": 145,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5625823451910408"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 145
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "f1_score(y_true,y_pred,average='weighted')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Vy8bDpLzWdZw",
+        "outputId": "7b7a8c6c-835c-490a-b7ea-d4025baa5937"
+      },
+      "execution_count": 149,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5625823451910408"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 149
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Samples"
+      ],
+      "metadata": {
+        "id": "DoDs7q6rYx-p"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def cal_samples_f1_score_for_multi_label(y_true,y_pred):\n",
+        "  samples_f1_score=0\n",
+        "  for i in range(len(y_true)):\n",
+        "    _y_true=y_true[i,:]\n",
+        "    _y_pred=y_pred[i,:]\n",
+        "    TP,FP,FN=cal_TP_FP_FN(_y_true,_y_pred,pos_label=1)\n",
+        "    precision=cal_precision(TP,FP)\n",
+        "    recall=cal_recall(TP,FN)\n",
+        "    if recall==0 or precision==0:\n",
+        "      f1=0\n",
+        "    else:\n",
+        "      f1=cal_f1_score(precision,recall)\n",
+        "    samples_f1_score+=f1\n",
+        "\n",
+        "  return samples_f1_score/len(y_true)"
+      ],
+      "metadata": {
+        "id": "cYr5aKQXXKr8"
+      },
+      "execution_count": 156,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cal_samples_f1_score_for_multi_label(y_true,y_pred)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "cnfu5wuKZOpN",
+        "outputId": "174d1f62-e9a4-4b3a-8098-265d86d0e7e6"
+      },
+      "execution_count": 157,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5423809523809524"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 157
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "f1_score(y_true,y_pred,average='samples')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "hZYKCpCHZ6I6",
+        "outputId": "7e110068-d555-4804-8c15-aed52134d2bc"
+      },
+      "execution_count": 158,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "0.5423809523809524"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 158
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        ""
+      ],
+      "metadata": {
+        "id": "8Ak8NNgwZ9J6"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
